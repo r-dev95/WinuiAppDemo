@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="WinuiAppDemo.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinuiAppDemo.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*"
+          ColumnDefinitions="Auto,*"
+          RowSpacing="10"
+          ColumnSpacing="10"
+          Padding="20">
+        <TextBlock Text="設定"
+                   Grid.Row="0"
+                   Grid.ColumnSpan="2"
+                   FontSize="24" />
+
+        <TextBlock Text="設定ファイルパス: "
+                   Grid.Row="1"
+                   Grid.Column="0"
+                   VerticalAlignment="Center" />
+        <TextBlock Text="{x:Bind ViewModel.DirPath, Mode=OneWay}"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   VerticalAlignment="Center"
+                   TextWrapping="Wrap" />
+
+        <TextBlock Text="時刻表示形式:"
+                   Grid.Row="2"
+                   Grid.Column="0"
+                   VerticalAlignment="Center" />
+        <ComboBox Grid.Row="2"
+                  Grid.Column="1"
+                  SelectedItem="{x:Bind ViewModel.SelectedTimeFormat, Mode=TwoWay}">
+            <x:String>HH:mm:ss</x:String>
+            <x:String>hh:mm:ss tt</x:String>
+        </ComboBox>
+
+        <Button Content="保存"
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Right"
+                Command="{x:Bind ViewModel.SaveSettingsCommand}" />
+    </Grid>
+</Page>

@@ -1,0 +1,158 @@
+﻿using System;
+using System.Collections.ObjectModel;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+
+using NLog;
+
+using WinuiAppDemo.Models;
+using WinuiAppDemo.Services.Interfaces;
+
+namespace WinuiAppDemo.ViewModels
+{
+    /// <summary>
+    /// Provides functionality for the main view model of the application.
+    /// </summary>
+    public partial class MainViewModel : ObservableObject
+    {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        private readonly IClockService _clockService;
+        private readonly INavigationService _navigationService;
+        private readonly ISettingsService _settingsService;
+
+        private readonly DispatcherTimer _timer = new ();
+        private string _clockText = string.Empty;
+        private ObservableCollection<NavItem> _navItems = [];
+        private NavItem _selectedItem = default!;
+        private bool _selectedTheme;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainViewModel"/> class.
+        /// </summary>
+        /// <param name="clockService">The Clock service.</param>
+        /// <param name="navigationService">The Navigation service.</param>
+        /// <param name="settingsService">The Settings service.</param>
+        public MainViewModel(IClockService clockService, INavigationService navigationService, ISettingsService settingsService)
+        {
+            // ------------------------------------------------------
+            // Setup Settings Service.
+            // ------------------------------------------------------
+            _settingsService = settingsService;
+            _settingsService.SettingsLoaded += OnSettingsLoaded;
+
+            // ------------------------------------------------------
+            // Setup Clock Service.
+            // ------------------------------------------------------
+            _clockService = clockService;
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += UpdateClock;
+            _timer.Start();
+
+            // ------------------------------------------------------
+            // Setup Navigation Service.
+            // ------------------------------------------------------
+            _navigationService = navigationService;
+            foreach (NavItem item in _navigationService.GetNavItems())
+            {
+                NavItems.Add(item);
+            }
+
+            _navigationService.Navigate(NavItems[0].Tag);
+            SelectedItem = NavItems[0];
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the selected theme is dark.
+        /// </summary>
+        public bool SelectedTheme
+        {
+            get => _selectedTheme;
+            set
+            {
+                if (SetProperty(ref _selectedTheme, value))
+                {
+                    _settingsService.SettingsApp.Theme = value ? ElementTheme.Dark : ElementTheme.Light;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current clock text.
+        /// </summary>
+        public string ClockText
+        {
+            get => _clockText;
+            set => SetProperty(ref _clockText, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the collection of navigation items.
+        /// </summary>
+        public ObservableCollection<NavItem> NavItems
+        {
+            get => _navItems;
+            set => SetProperty(ref _navItems, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the currently selected navigation item.
+        /// </summary>
+        public NavItem SelectedItem
+        {
+            get => _selectedItem;
+            set => SetProperty(ref _selectedItem, value);
+        }
+
+        /// <summary>
+        /// Navigates to the invoked item in the NavigationView.
+        /// </summary>
+        /// <param name="_">NavigationView.</param>
+        /// <param name="args">NavigationViewItemInvokedEventArgs.</param>
+        public void ItemInvoked(NavigationView _, NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.IsSettingsInvoked)
+            {
+                _navigationService.Frame!.Navigate(_navigationService.SettingsPageType);
+                return;
+            }
+
+            string? tag = args.InvokedItem.ToString();
+            if (tag != null)
+            {
+                _navigationService.Navigate(tag);
+            }
+        }
+
+        /// <summary>
+        /// Back navigation handler for the NavigationView control.
+        /// </summary>
+        /// <param name="sender">NavigationView.</param>
+        /// <param name="_">NavigationViewBackRequestedEventArgs.</param>
+        public void BackHandler(NavigationView sender, NavigationViewBackRequestedEventArgs _)
+        {
+            _navigationService.GoBack();
+
+            if (_navigationService.Frame.CurrentSourcePageType == _navigationService.SettingsPageType)
+            {
+                sender.SelectedItem = sender.SettingsItem;
+                return;
+            }
+
+            SelectedItem = _navigationService.GetCurrentFrameType();
+        }
+
+        private void UpdateClock(object? sender, object e)
+        {
+            ClockText = _clockService.GetCurrentTime().ToString(_settingsService.SettingsApp.TimeFormat);
+        }
+
+        private void OnSettingsLoaded(object? sender, EventArgs e)
+        {
+            SelectedTheme = _settingsService.SettingsApp.Theme == ElementTheme.Dark;
+        }
+    }
+}
