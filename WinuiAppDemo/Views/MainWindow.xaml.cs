@@ -42,7 +42,7 @@ namespace WinuiAppDemo.Views
         /// <summary>
         /// Gets the view model for this class.
         /// </summary>
-        public MainViewModel ViewModel { get; }
+        public MainViewModel ViewModel { get; private set; }
 
         /// <summary>
         /// Changes the application theme based on the toggle switch state.

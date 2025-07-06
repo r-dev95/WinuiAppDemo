@@ -27,6 +27,6 @@ namespace WinuiAppDemo.Views
         /// <summary>
         /// Gets the view model for this class.
         /// </summary>
-        public SettingsViewModel ViewModel { get; }
+        public SettingsViewModel ViewModel { get; private set; }
     }
 }
