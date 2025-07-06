@@ -31,7 +31,7 @@ namespace WinuiAppDemo
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             AppLogging.Configure();
-            AppServices.ConfigureServices();
+            AppServices.Configure();
 
             Window = new Views.MainWindow();
             Window.Activate();

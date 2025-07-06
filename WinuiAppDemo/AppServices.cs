@@ -26,7 +26,7 @@ namespace WinuiAppDemo
         /// <summary>
         /// Cinfigures the application's services and sets up dependency injection.
         /// </summary>
-        public static void ConfigureServices()
+        public static void Configure()
         {
             ServiceCollection services = new ();
 
