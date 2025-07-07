@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using WinuiAppDemo.Models;
 
@@ -11,14 +10,9 @@ namespace WinuiAppDemo.Services.Interfaces
     public interface ISettingsService
     {
         /// <summary>
-        /// Occurs when the settings have been successfully loaded.
-        /// </summary>
-        event EventHandler? SettingsLoaded;
-
-        /// <summary>
         /// Gets or sets the application settings configuration.
         /// </summary>
-        SettingsApp SettingsApp { get; set; }
+        UserSettings UserSettings { get; set; }
 
         /// <summary>
         /// Gets or sets the directory path.
@@ -28,13 +22,12 @@ namespace WinuiAppDemo.Services.Interfaces
         /// <summary>
         /// Loads the application settings asynchronously from a file in the local storage directory.
         /// </summary>
-        /// <returns>A asynchronous task.</returns>
-        Task LoadSettingsAsync();
+        void Load();
 
         /// <summary>
         /// Saves the application settings asynchronously to a file in the local storage directory.
         /// </summary>
         /// <returns>A asynchronous task.</returns>
-        Task SaveSettingsAsync();
+        Task SaveAsync();
     }
 }

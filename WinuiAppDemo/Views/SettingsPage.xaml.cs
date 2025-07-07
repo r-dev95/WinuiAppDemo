@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
 using NLog;
@@ -17,16 +16,17 @@ namespace WinuiAppDemo.Views
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsPage"/> class.
         /// </summary>
+        /// <param name="viewModel">Settings view model.</param>
         public SettingsPage()
         {
             InitializeComponent();
 
-            ViewModel = AppServices.Services!.GetRequiredService<SettingsViewModel>();
+            ViewModel = App.GetService<SettingsViewModel>();
         }
 
         /// <summary>
         /// Gets the view model for this class.
         /// </summary>
-        public SettingsViewModel ViewModel { get; }
+        public SettingsViewModel ViewModel { get; private set; }
     }
 }

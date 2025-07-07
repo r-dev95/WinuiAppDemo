@@ -3,9 +3,9 @@ using Microsoft.UI.Xaml;
 namespace WinuiAppDemo.Models
 {
     /// <summary>
-    /// Provides functionality for defining application settings.
+    /// Defines user settings for the application.
     /// </summary>
-    public class SettingsApp
+    public class UserSettings
     {
         /// <summary>
         /// Gets or sets the app theme.
