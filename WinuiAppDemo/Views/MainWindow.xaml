@@ -43,12 +43,12 @@
                        HorizontalAlignment="Right"
                        Margin="0,0,200,0"
                        Text="{x:Bind ViewModel.ClockText, Mode=OneWay}" />
-            <ToggleButton x:Name="ToggleTheme"
+            <ToggleButton x:Name="toggleTheme"
                           Grid.Column="2"
                           HorizontalAlignment="Right"
                           Margin="0,0,150,0"
-                          Loaded="ChangeTheme"
-                          Click="ChangeTheme"
+                          Loaded="{x:Bind ViewModel.ChangeThemeLoaded}"
+                          Command="{x:Bind ViewModel.ChangeThemeCommand}"
                           IsChecked="{x:Bind ViewModel.SelectedTheme, Mode=TwoWay}">
                 <FontIcon Glyph="&#xE793;"
                           FontSize="16" />

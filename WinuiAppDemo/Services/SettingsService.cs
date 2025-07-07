@@ -3,6 +3,8 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Options;
+
 using NLog;
 
 #if UNPACKAGED
@@ -18,33 +20,39 @@ namespace WinuiAppDemo.Services
     /// <inheritdoc />
     public class SettingsService : ISettingsService
     {
-        private const string FileName = "settingsApp.json";
-
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private SettingsApp _settingsApp = default!;
-        private string _dirPath = default!;
+        private readonly IOptions<AppSettings> _options;
+
+        private readonly string _fName = "userSettings.json";
+
+        private UserSettings _userSettings = default!;
+
+#if UNPACKAGED
+        private string _dirPath = AppContext.BaseDirectory;
+#else
+        private string _dirPath = ApplicationData.Current.LocalFolder.Path
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsService"/> class.
         /// </summary>
-        public SettingsService()
+        /// <param name="options">AppSettings options.</param>
+        public SettingsService(IOptions<AppSettings> options)
         {
-            _ = LoadSettingsAsync();
+            _options = options;
+            _fName = _options.Value.UserSettingsFileNmae;
         }
 
         /// <inheritdoc />
-        public event EventHandler? SettingsLoaded;
-
-        /// <inheritdoc />
-        public SettingsApp SettingsApp
+        public UserSettings UserSettings
         {
-            get => _settingsApp;
+            get => _userSettings;
             set
             {
-                if (_settingsApp != value)
+                if (_userSettings != value)
                 {
-                    _settingsApp = value;
+                    _userSettings = value;
                 }
             }
         }
@@ -63,59 +71,39 @@ namespace WinuiAppDemo.Services
         }
 
         /// <inheritdoc />
-        public async Task LoadSettingsAsync()
+        public void Load()
         {
             try
             {
-#if UNPACKAGED
-                DirPath = AppContext.BaseDirectory;
-                string fpath = System.IO.Path.Combine(DirPath, FileName);
-                string json = await File.ReadAllTextAsync(fpath);
-#else
-                StorageFolder dpath = ApplicationData.Current.LocalFolder;
-                DirPath = dpath.Path;
-                StorageFile fpath = await dpath.GetFileAsync(FileName);
-                string json = await FileIO.ReadTextAsync(fpath);
-#endif
-                SettingsApp? loaded = JsonSerializer.Deserialize(json, AppJsonContext.Default.SettingsApp);
+                string fpath = Path.Combine(DirPath, _fName);
+                string json = File.ReadAllText(fpath);
+                UserSettings? data = JsonSerializer.Deserialize(json, AppJsonContext.Default.UserSettings);
 
-                if (loaded != null)
+                if (data != null)
                 {
-                    SettingsApp = loaded;
+                    UserSettings = data;
                 }
-
-                SettingsLoaded?.Invoke(this, EventArgs.Empty);
             }
             catch (FileNotFoundException)
             {
                 _logger.Warn("Settings file not found. Using default settings.");
-                SettingsApp = new SettingsApp();
+                UserSettings = new UserSettings();
             }
             catch (Exception ex)
             {
                 _logger.Warn(ex, "Failed to load settings.");
-                SettingsApp = new SettingsApp();
+                UserSettings = new UserSettings();
             }
         }
 
         /// <inheritdoc />
-        public async Task SaveSettingsAsync()
+        public async Task SaveAsync()
         {
             try
             {
-#if UNPACKAGED
-                DirPath = AppContext.BaseDirectory;
-                string fpath = System.IO.Path.Combine(DirPath, FileName);
-                string json = JsonSerializer.Serialize(_settingsApp, AppJsonContext.Default.SettingsApp);
+                string fpath = Path.Combine(DirPath, _fName);
+                string json = JsonSerializer.Serialize(_userSettings, AppJsonContext.Default.UserSettings);
                 await File.WriteAllTextAsync(fpath, json);
-#else
-                StorageFolder dpath = ApplicationData.Current.LocalFolder;
-                DirPath = dpath.Path;
-                StorageFile fpath = await dpath.CreateFileAsync(FileName, CreationCollisionOption.ReplaceExisting);
-                string json = JsonSerializer.Serialize(_settingsApp, AppJsonContext.Default.SettingsApp);
-                await FileIO.WriteTextAsync(fpath, json);
-#endif
-                SettingsLoaded?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {

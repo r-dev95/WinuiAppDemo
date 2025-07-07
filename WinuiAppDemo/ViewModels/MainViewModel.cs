@@ -2,7 +2,11 @@
 using System.Collections.ObjectModel;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
+using Microsoft.Extensions.Options;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -20,6 +24,7 @@ namespace WinuiAppDemo.ViewModels
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
+        private readonly IOptions<UserSettings> _options;
         private readonly IClockService _clockService;
         private readonly INavigationService _navigationService;
         private readonly ISettingsService _settingsService;
@@ -33,16 +38,20 @@ namespace WinuiAppDemo.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
         /// </summary>
+        /// <param name="options">The options.</param>
         /// <param name="clockService">The Clock service.</param>
         /// <param name="navigationService">The Navigation service.</param>
         /// <param name="settingsService">The Settings service.</param>
-        public MainViewModel(IClockService clockService, INavigationService navigationService, ISettingsService settingsService)
+        public MainViewModel(IOptions<UserSettings> options, IClockService clockService, INavigationService navigationService, ISettingsService settingsService)
         {
+            _options = options;
+
             // ------------------------------------------------------
             // Setup Settings Service.
             // ------------------------------------------------------
             _settingsService = settingsService;
-            _settingsService.SettingsLoaded += OnSettingsLoaded;
+            _logger.Info($"_settingsService.UserSettings.Theme: {_settingsService.UserSettings.Theme}");
+            SelectedTheme = _settingsService.UserSettings.Theme == ElementTheme.Dark; // Do not set SelectedTheme here.
 
             // ------------------------------------------------------
             // Setup Clock Service.
@@ -75,7 +84,7 @@ namespace WinuiAppDemo.ViewModels
             {
                 if (SetProperty(ref _selectedTheme, value))
                 {
-                    _settingsService.SettingsApp.Theme = value ? ElementTheme.Dark : ElementTheme.Light;
+                    _settingsService.UserSettings.Theme = value ? ElementTheme.Dark : ElementTheme.Light;
                 }
             }
         }
@@ -120,8 +129,7 @@ namespace WinuiAppDemo.ViewModels
                 return;
             }
 
-            string? tag = args.InvokedItem.ToString();
-            if (tag != null)
+            if (args.InvokedItem.ToString() is string tag)
             {
                 _navigationService.Navigate(tag);
             }
@@ -145,14 +153,38 @@ namespace WinuiAppDemo.ViewModels
             SelectedItem = _navigationService.GetCurrentFrameType();
         }
 
-        private void UpdateClock(object? sender, object e)
+        /// <summary>
+        /// Changes the application theme.
+        /// </summary>
+        /// <param name="_">Sender.</param>
+        /// <param name="__"> RoutedEventArgs.</param>
+        public void ChangeThemeLoaded(object? _, RoutedEventArgs? __)
         {
-            ClockText = _clockService.GetCurrentTime().ToString(_settingsService.SettingsApp.TimeFormat);
+            bool isDark = SelectedTheme;
+
+            if ((App.Current as App) !.Window.Content is FrameworkElement rootElement)
+            {
+                rootElement.RequestedTheme = isDark ? ElementTheme.Dark : ElementTheme.Light;
+            }
+
+            AppWindowTitleBar titleBar = (App.Current as App) !.Window.AppWindow.TitleBar;
+            titleBar.ButtonForegroundColor = isDark ? Colors.White : Colors.Black;
+            titleBar.ButtonHoverBackgroundColor = isDark ? Colors.DimGray : Colors.LightGray;
+            titleBar.ButtonHoverForegroundColor = isDark ? Colors.White : Colors.Black;
         }
 
-        private void OnSettingsLoaded(object? sender, EventArgs e)
+        /// <summary>
+        /// Changes the application theme.
+        /// </summary>
+        [RelayCommand]
+        public void ChangeTheme()
         {
-            SelectedTheme = _settingsService.SettingsApp.Theme == ElementTheme.Dark;
+            ChangeThemeLoaded(null, null);
+        }
+
+        private void UpdateClock(object? sender, object e)
+        {
+            ClockText = _clockService.GetCurrentTime().ToString(_settingsService.UserSettings.TimeFormat);
         }
     }
 }

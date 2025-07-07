@@ -7,7 +7,7 @@ namespace WinuiAppDemo
     /// <summary>
     /// Provides functionality for serializing and deserializing the application settings.
     /// </summary>
-    [JsonSerializable(typeof(SettingsApp))]
+    [JsonSerializable(typeof(UserSettings))]
     public partial class AppJsonContext : JsonSerializerContext
     {
     }
