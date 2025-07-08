@@ -17,7 +17,7 @@ namespace WinuiAppDemo.ViewModels
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IOptions<UserSettings> _options;
+        private readonly AppSettings _options;
         private readonly ISettingsService _settingsService;
 
         private string _dPath = App.DPath;
@@ -28,9 +28,9 @@ namespace WinuiAppDemo.ViewModels
         /// </summary>
         /// /// <param name="options">The options.</param>
         /// <param name="settingsService">ISettingsService.</param>
-        public SettingsViewModel(IOptions<UserSettings> options, ISettingsService settingsService)
+        public SettingsViewModel(IOptions<AppSettings> options, ISettingsService settingsService)
         {
-            _options = options;
+            _options = options.Value;
 
             _settingsService = settingsService;
             SelectedTimeFormat = _settingsService.UserSettings.TimeFormat;

@@ -41,6 +41,9 @@ namespace WinuiAppDemo
                     // Configuration
                     services.Configure<AppSettings>(context.Configuration.GetSection(nameof(AppSettings)));
 
+                    // Logging
+                    services.AddSingleton<AppLogging>();
+
                     // Service
                     services.AddSingleton<ISettingsService, SettingsService>();
                     services.AddSingleton<IClockService, ClockService>();
@@ -101,7 +104,7 @@ namespace WinuiAppDemo
         /// <param name="args">LaunchActivatedEventArgs.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            AppLogging.Configure();
+            GetService<AppLogging>().Configure();
 
             GetService<ISettingsService>().Load();
 

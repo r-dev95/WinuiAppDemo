@@ -1,20 +1,35 @@
 ﻿using System.Text;
 
+using Microsoft.Extensions.Options;
+
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+
+using WinuiAppDemo.Models;
 
 namespace WinuiAppDemo
 {
     /// <summary>
     /// Provides functionality for configuring application logging using NLog.
     /// </summary>
-    public static class AppLogging
+    public class AppLogging
     {
+        private readonly AppSettings _options;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppLogging"/> class.
+        /// </summary>
+        /// <param name="options">AppSettings options.</param>
+        public AppLogging(IOptions<AppSettings> options)
+        {
+            _options = options.Value;
+        }
+
         /// <summary>
         /// Configures the NLog logging settings for the application.
         /// </summary>
-        public static void Configure()
+        public void Configure()
         {
             string fName = App.DPath + "/logs/${date:format=yyyyMMdd}.log";
             string archiveFName = App.DPath + "/logs/archive.${date:format=yyyyMMdd}.log"; // "/logs/archive.{#}.log"
@@ -32,13 +47,13 @@ namespace WinuiAppDemo
                 Encoding = Encoding.UTF8,
                 FileName = fName,
                 ArchiveFileName = archiveFName,
-                ArchiveEvery = FileArchivePeriod.Day,
-                MaxArchiveFiles = 7,
+                ArchiveEvery = _options.LogArchiveEvery,
+                MaxArchiveFiles = _options.LogMaxArchiveFiles,
                 Layout = layout,
             };
 
             config.AddTarget(fileTarget);
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
+            config.AddRule(_options.LogMinLevel, _options.LogMaxLevel, fileTarget);
             LogManager.Configuration = config;
         }
     }
