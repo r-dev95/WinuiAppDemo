@@ -20,7 +20,7 @@ namespace WinuiAppDemo.ViewModels
         private readonly IOptions<UserSettings> _options;
         private readonly ISettingsService _settingsService;
 
-        private string _dirPath = "None";
+        private string _dPath = App.DPath;
         private string _selectedTimeFormat = string.Empty;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace WinuiAppDemo.ViewModels
 
             _settingsService = settingsService;
             SelectedTimeFormat = _settingsService.UserSettings.TimeFormat;
-            DirPath = _settingsService.DirPath;
+            DPath = _settingsService.DPath;
         }
 
         /// <summary>
@@ -55,10 +55,10 @@ namespace WinuiAppDemo.ViewModels
         /// <summary>
         /// Gets or sets the directory path.
         /// </summary>
-        public string DirPath
+        public string DPath
         {
-            get => _dirPath;
-            set => SetProperty(ref _dirPath, value);
+            get => _dPath;
+            set => SetProperty(ref _dPath, value);
         }
 
         [RelayCommand]

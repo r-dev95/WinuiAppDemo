@@ -6,6 +6,11 @@ using Microsoft.UI.Xaml;
 
 using NLog;
 
+#if UNPACKAGED
+#else
+using Windows.Storage;
+#endif
+
 using WinuiAppDemo.Models;
 using WinuiAppDemo.Services;
 using WinuiAppDemo.Services.Interfaces;
@@ -52,15 +57,24 @@ namespace WinuiAppDemo
                 .Build();
         }
 
+#if UNPACKAGED
         /// <summary>
-        /// Gets the current application host instance.
+        /// Gets the application's base directory path.
         /// </summary>
-        public IHost Host { get; private set; }
+        public static string DPath { get; private set; } = AppContext.BaseDirectory;
+#else
+        public static string DPath { get; private set; } = ApplicationData.Current.LocalFolder.Path;
+#endif
 
         /// <summary>
         /// Gets the current application window instance.
         /// </summary>
         public Window Window { get; private set; } = default!;
+
+        /// <summary>
+        /// Gets or sets the current application host instance.
+        /// </summary>
+        private IHost Host { get; set; }
 
         /// <summary>
         /// Gets a service of type T from the application's service provider.

@@ -22,7 +22,7 @@
                    Grid.Row="1"
                    Grid.Column="0"
                    VerticalAlignment="Center" />
-        <TextBlock Text="{x:Bind ViewModel.DirPath, Mode=OneWay}"
+        <TextBlock Text="{x:Bind ViewModel.DPath, Mode=OneWay}"
                    Grid.Row="1"
                    Grid.Column="1"
                    VerticalAlignment="Center"

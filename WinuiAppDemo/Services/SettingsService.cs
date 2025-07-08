@@ -1,16 +1,12 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Options;
 
 using NLog;
-
-#if UNPACKAGED
-#else
-using Windows.Storage;
-#endif
 
 using WinuiAppDemo.Models;
 using WinuiAppDemo.Services.Interfaces;
@@ -28,11 +24,7 @@ namespace WinuiAppDemo.Services
 
         private UserSettings _userSettings = default!;
 
-#if UNPACKAGED
-        private string _dirPath = AppContext.BaseDirectory;
-#else
-        private string _dirPath = ApplicationData.Current.LocalFolder.Path
-#endif
+        private string _dPath = App.DPath;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsService"/> class.
@@ -58,14 +50,14 @@ namespace WinuiAppDemo.Services
         }
 
         /// <inheritdoc />
-        public string DirPath
+        public string DPath
         {
-            get => _dirPath;
+            get => _dPath;
             set
             {
-                if (_dirPath != value)
+                if (_dPath != value)
                 {
-                    _dirPath = value;
+                    _dPath = value;
                 }
             }
         }
@@ -75,7 +67,7 @@ namespace WinuiAppDemo.Services
         {
             try
             {
-                string fpath = Path.Combine(DirPath, _fName);
+                string fpath = Path.Combine(DPath, _fName);
                 string json = File.ReadAllText(fpath);
                 UserSettings? data = JsonSerializer.Deserialize(json, AppJsonContext.Default.UserSettings);
 
@@ -101,9 +93,10 @@ namespace WinuiAppDemo.Services
         {
             try
             {
-                string fpath = Path.Combine(DirPath, _fName);
-                string json = JsonSerializer.Serialize(_userSettings, AppJsonContext.Default.UserSettings);
-                await File.WriteAllTextAsync(fpath, json);
+                Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true);
+                string fpath = Path.Combine(DPath, _fName);
+                string json = JsonSerializer.Serialize(UserSettings, AppJsonContext.Indented.UserSettings);
+                await File.WriteAllTextAsync(fpath, json, encoding);
             }
             catch (Exception ex)
             {
