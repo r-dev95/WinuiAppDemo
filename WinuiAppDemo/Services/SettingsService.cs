@@ -22,9 +22,9 @@ namespace WinuiAppDemo.Services
 
         private readonly string _fName = string.Empty;
 
-        private UserSettings _userSettings = default!;
+        private readonly string _dPath = App.DPath;
 
-        private string _dPath = App.DPath;
+        private UserSettings _userSettings = default!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsService"/> class.
@@ -50,24 +50,11 @@ namespace WinuiAppDemo.Services
         }
 
         /// <inheritdoc />
-        public string DPath
-        {
-            get => _dPath;
-            set
-            {
-                if (_dPath != value)
-                {
-                    _dPath = value;
-                }
-            }
-        }
-
-        /// <inheritdoc />
         public void Load()
         {
             try
             {
-                string fpath = Path.Combine(DPath, _fName);
+                string fpath = Path.Combine(_dPath, _fName);
                 string json = File.ReadAllText(fpath);
                 UserSettings? data = JsonSerializer.Deserialize(json, AppJsonContext.Default.UserSettings);
 
@@ -94,7 +81,7 @@ namespace WinuiAppDemo.Services
             try
             {
                 Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true);
-                string fpath = Path.Combine(DPath, _fName);
+                string fpath = Path.Combine(_dPath, _fName);
                 string json = JsonSerializer.Serialize(UserSettings, AppJsonContext.Indented.UserSettings);
                 await File.WriteAllTextAsync(fpath, json, encoding);
             }

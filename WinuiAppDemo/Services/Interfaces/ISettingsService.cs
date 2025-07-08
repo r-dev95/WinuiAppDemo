@@ -15,11 +15,6 @@ namespace WinuiAppDemo.Services.Interfaces
         UserSettings UserSettings { get; set; }
 
         /// <summary>
-        /// Gets or sets the directory path.
-        /// </summary>
-        string DPath { get; set; }
-
-        /// <summary>
         /// Loads the application settings asynchronously from a file in the local storage directory.
         /// </summary>
         void Load();
