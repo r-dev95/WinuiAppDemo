@@ -17,7 +17,7 @@ namespace WinuiAppDemo.Services.Interfaces
         /// <summary>
         /// Gets or sets the directory path.
         /// </summary>
-        string DirPath { get; set; }
+        string DPath { get; set; }
 
         /// <summary>
         /// Loads the application settings asynchronously from a file in the local storage directory.

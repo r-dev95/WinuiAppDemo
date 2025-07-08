@@ -4,11 +4,6 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-#if UNPACKAGED
-#else
-using Windows.Storage;
-#endif
-
 namespace WinuiAppDemo
 {
     /// <summary>
@@ -21,31 +16,29 @@ namespace WinuiAppDemo
         /// </summary>
         public static void Configure()
         {
-#if UNPACKAGED
-            string basePath = "${basedir}";
-#else
-            string basePath = ApplicationData.Current.LocalFolder.Path;
-#endif
+            string fName = App.DPath + "/logs/${date:format=yyyyMMdd}.log";
+            string archiveFName = App.DPath + "/logs/archive.${date:format=yyyyMMdd}.log"; // "/logs/archive.{#}.log"
+            string layout = "[${longdate}]"
+                + "[${threadid:padding=5}]"
+                + "[${uppercase:${level:padding=-5}}]"
+                + "[${callsite}]"
+                + " - ${message}"
+                + " - ${exception:format=@}";
+
             LoggingConfiguration config = new ();
 
-            ConsoleTarget consoleTarget = new ("console");
-
-            FileTarget fileTarget = new ("File")
+            FileTarget fileTarget = new ("file")
             {
-                Layout = "[${longdate}][${threadid:padding=8}][${uppercase:${level:padding=-5}}][${callsite}] - ${message} ${exception:format=@}",
-                FileName = basePath + "/logs/${date:format=yyyyMMdd}.log",
                 Encoding = Encoding.UTF8,
-                ArchiveFileName = basePath + "/logs/archive.{#}.log",
+                FileName = fName,
+                ArchiveFileName = archiveFName,
                 ArchiveEvery = FileArchivePeriod.Day,
                 MaxArchiveFiles = 7,
+                Layout = layout,
             };
 
-            config.AddTarget(consoleTarget);
             config.AddTarget(fileTarget);
-
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, consoleTarget);
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
-
             LogManager.Configuration = config;
         }
     }
