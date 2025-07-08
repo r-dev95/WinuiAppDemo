@@ -1,3 +1,7 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,9 +22,11 @@ namespace WinuiAppDemo.ViewModels
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly AppSettings _options;
+
         private readonly ISettingsService _settingsService;
 
-        private string _dPath = App.DPath;
+        private readonly string _dPath = App.DPath;
+
         private string _selectedTimeFormat = string.Empty;
 
         /// <summary>
@@ -34,7 +40,6 @@ namespace WinuiAppDemo.ViewModels
 
             _settingsService = settingsService;
             SelectedTimeFormat = _settingsService.UserSettings.TimeFormat;
-            DPath = _settingsService.DPath;
         }
 
         /// <summary>
@@ -52,13 +57,28 @@ namespace WinuiAppDemo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets or sets the directory path.
-        /// </summary>
-        public string DPath
+        [RelayCommand]
+        private void OpenExplorer()
         {
-            get => _dPath;
-            set => SetProperty(ref _dPath, value);
+            try
+            {
+                if (Directory.Exists(_dPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = _dPath,
+                        UseShellExecute = true,
+                    });
+                }
+                else
+                {
+                    _logger.Warn($"Directory does not exist: {_dPath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Failed to open directory in Explorer.");
+            }
         }
 
         [RelayCommand]

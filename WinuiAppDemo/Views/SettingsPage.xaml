@@ -8,39 +8,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*"
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
           ColumnDefinitions="Auto,*"
           RowSpacing="10"
           ColumnSpacing="10"
           Padding="20">
-        <TextBlock Text="設定"
+        <TextBlock Text="Settings"
                    Grid.Row="0"
-                   Grid.ColumnSpan="2"
                    FontSize="24" />
+        <Button Content="Open"
+                Grid.Row="0"
+                Grid.Column="1"
+                Command="{x:Bind ViewModel.OpenExplorerCommand}" />
 
-        <TextBlock Text="設定ファイルパス: "
+        <TextBlock Text="Clock format:"
                    Grid.Row="1"
                    Grid.Column="0"
                    VerticalAlignment="Center" />
-        <TextBlock Text="{x:Bind ViewModel.DPath, Mode=OneWay}"
-                   Grid.Row="1"
-                   Grid.Column="1"
-                   VerticalAlignment="Center"
-                   TextWrapping="Wrap" />
-
-        <TextBlock Text="時刻表示形式:"
-                   Grid.Row="2"
-                   Grid.Column="0"
-                   VerticalAlignment="Center" />
-        <ComboBox Grid.Row="2"
+        <ComboBox Grid.Row="1"
                   Grid.Column="1"
                   SelectedItem="{x:Bind ViewModel.SelectedTimeFormat, Mode=TwoWay}">
             <x:String>HH:mm:ss</x:String>
             <x:String>hh:mm:ss tt</x:String>
         </ComboBox>
 
-        <Button Content="保存"
-                Grid.Row="3"
+        <Button Content="Save"
+                Grid.Row="2"
                 Grid.ColumnSpan="2"
                 HorizontalAlignment="Right"
                 Command="{x:Bind ViewModel.SaveSettingsCommand}" />

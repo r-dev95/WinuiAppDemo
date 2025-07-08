@@ -172,11 +172,8 @@ namespace WinuiAppDemo.ViewModels
             titleBar.ButtonHoverForegroundColor = isDark ? Colors.White : Colors.Black;
         }
 
-        /// <summary>
-        /// Changes the application theme.
-        /// </summary>
         [RelayCommand]
-        public void ChangeTheme()
+        private void ChangeTheme()
         {
             ChangeThemeLoaded(null, null);
         }
