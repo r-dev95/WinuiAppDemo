@@ -24,7 +24,7 @@ namespace WinuiAppDemo.ViewModels
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IOptions<UserSettings> _options;
+        private readonly AppSettings _options;
         private readonly IClockService _clockService;
         private readonly INavigationService _navigationService;
         private readonly ISettingsService _settingsService;
@@ -42,15 +42,14 @@ namespace WinuiAppDemo.ViewModels
         /// <param name="clockService">The Clock service.</param>
         /// <param name="navigationService">The Navigation service.</param>
         /// <param name="settingsService">The Settings service.</param>
-        public MainViewModel(IOptions<UserSettings> options, IClockService clockService, INavigationService navigationService, ISettingsService settingsService)
+        public MainViewModel(IOptions<AppSettings> options, IClockService clockService, INavigationService navigationService, ISettingsService settingsService)
         {
-            _options = options;
+            _options = options.Value;
 
             // ------------------------------------------------------
             // Setup Settings Service.
             // ------------------------------------------------------
             _settingsService = settingsService;
-            _logger.Info($"_settingsService.UserSettings.Theme: {_settingsService.UserSettings.Theme}");
             SelectedTheme = _settingsService.UserSettings.Theme == ElementTheme.Dark; // Do not set SelectedTheme here.
 
             // ------------------------------------------------------

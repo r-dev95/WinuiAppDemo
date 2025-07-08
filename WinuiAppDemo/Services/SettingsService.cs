@@ -18,9 +18,9 @@ namespace WinuiAppDemo.Services
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IOptions<AppSettings> _options;
+        private readonly AppSettings _options;
 
-        private readonly string _fName = "userSettings.json";
+        private readonly string _fName = string.Empty;
 
         private UserSettings _userSettings = default!;
 
@@ -32,8 +32,8 @@ namespace WinuiAppDemo.Services
         /// <param name="options">AppSettings options.</param>
         public SettingsService(IOptions<AppSettings> options)
         {
-            _options = options;
-            _fName = _options.Value.UserSettingsFileNmae;
+            _options = options.Value;
+            _fName = _options.UserSettingsFileNmae;
         }
 
         /// <inheritdoc />
