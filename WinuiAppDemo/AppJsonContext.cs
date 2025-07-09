@@ -3,29 +3,28 @@ using System.Text.Json.Serialization;
 
 using WinuiAppDemo.Models;
 
-namespace WinuiAppDemo
+namespace WinuiAppDemo;
+
+/// <summary>
+/// Provides functionality for serializing and deserializing the application settings.
+/// </summary>
+[JsonSourceGenerationOptions(WriteIndented = true, GenerationMode = JsonSourceGenerationMode.Metadata)]
+[JsonSerializable(typeof(UserSettings))]
+public partial class AppJsonContext : JsonSerializerContext
 {
     /// <summary>
-    /// Provides functionality for serializing and deserializing the application settings.
+    /// Gets a new instance of <see cref="AppJsonContext"/> with indented formatting.
     /// </summary>
-    [JsonSourceGenerationOptions(WriteIndented = true, GenerationMode = JsonSourceGenerationMode.Metadata)]
-    [JsonSerializable(typeof(UserSettings))]
-    public partial class AppJsonContext : JsonSerializerContext
+    public static AppJsonContext Indented { get; } = new (new JsonSerializerOptions
     {
-        /// <summary>
-        /// Gets a new instance of <see cref="AppJsonContext"/> with indented formatting.
-        /// </summary>
-        public static AppJsonContext Indented { get; } = new (new JsonSerializerOptions
-        {
-            WriteIndented = true,
-        });
+        WriteIndented = true,
+    });
 
-        /// <summary>
-        /// Gets a new instance of <see cref="AppJsonContext"/> with compact formatting.
-        /// </summary>
-        public static AppJsonContext Compact { get; } = new (new JsonSerializerOptions
-        {
-            WriteIndented = false,
-        });
-    }
+    /// <summary>
+    /// Gets a new instance of <see cref="AppJsonContext"/> with compact formatting.
+    /// </summary>
+    public static AppJsonContext Compact { get; } = new (new JsonSerializerOptions
+    {
+        WriteIndented = false,
+    });
 }
