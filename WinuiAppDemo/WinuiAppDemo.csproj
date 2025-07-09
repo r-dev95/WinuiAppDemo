@@ -20,6 +20,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\HomePage.xaml" />
+    <None Remove="Views\ShellPage.xaml" />
     <None Remove="Views\UserPage.xaml" />
   </ItemGroup>
 
@@ -57,6 +58,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\ShellPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\UserPage.xaml">
