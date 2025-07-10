@@ -37,6 +37,7 @@ public class AppLogging
             + "[${threadid:padding=5}]"
             + "[${uppercase:${level:padding=-5}}]"
             + "[${callsite}]"
+            + "[${callsite-linenumber:padding=5}]"
             + " - ${message}"
             + " - ${exception:format=@}";
 

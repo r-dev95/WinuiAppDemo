@@ -16,34 +16,12 @@ public class NavigationService : INavigationService
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     private readonly Dictionary<string, NavItem> _navItems = [];
-    private Frame _frame = default!;
-    private Type? _settingsPageType;
 
     /// <inheritdoc />
-    public Frame Frame
-    {
-        get => _frame;
-        set
-        {
-            if (_frame != value)
-            {
-                _frame = value;
-            }
-        }
-    }
+    public Frame Frame { get; set; } = default!;
 
     /// <inheritdoc />
-    public Type? SettingsPageType
-    {
-        get => _settingsPageType;
-        set
-        {
-            if (_settingsPageType != value)
-            {
-                _settingsPageType = value;
-            }
-        }
-    }
+    public Type? SettingsPageType { get; set; }
 
     /// <inheritdoc />
     public void Register(NavItem item)
@@ -51,6 +29,10 @@ public class NavigationService : INavigationService
         if (!_navItems.ContainsKey(item.Tag))
         {
             _navItems[item.Tag] = item;
+        }
+        else
+        {
+            _logger.Warn($"item.Tag:{item.Tag} key already exists in _navItems.");
         }
     }
 
@@ -60,6 +42,10 @@ public class NavigationService : INavigationService
         if (_navItems.TryGetValue(tag, out var item))
         {
             Frame.Navigate(item.PageType);
+        }
+        else
+        {
+            _logger.Error($"tag:{tag} key does not exist in _navItems.");
         }
     }
 

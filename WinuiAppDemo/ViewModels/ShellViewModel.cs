@@ -13,9 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using NLog;
 
 using WinuiAppDemo.Models;
-using WinuiAppDemo.Services;
 using WinuiAppDemo.Services.Interfaces;
-using WinuiAppDemo.Views;
 
 namespace WinuiAppDemo.ViewModels;
 

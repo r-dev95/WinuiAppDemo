@@ -27,5 +27,5 @@ public sealed partial class HomePage : Page
     /// <summary>
     /// Gets the view model.
     /// </summary>
-    public HomeViewModel ViewModel { get; private set; }
+    public HomeViewModel ViewModel { get; }
 }

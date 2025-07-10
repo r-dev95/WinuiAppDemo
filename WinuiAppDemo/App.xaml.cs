@@ -67,20 +67,17 @@ public partial class App : Application
     /// <summary>
     /// Gets the application's base directory path.
     /// </summary>
-    public static string DPath { get; private set; } = AppContext.BaseDirectory;
+    public static string DPath { get; } = AppContext.BaseDirectory;
 #else
-    public static string DPath { get; private set; } = ApplicationData.Current.LocalFolder.Path;
+    public static string DPath { get; } = ApplicationData.Current.LocalFolder.Path;
 #endif
 
     /// <summary>
     /// Gets the current application window instance.
     /// </summary>
-    public static Window MainWindow { get; private set; } = GetService<MainWindow>();
+    public static Window MainWindow { get; } = GetService<MainWindow>();
 
-    /// <summary>
-    /// Gets or sets the current application host instance.
-    /// </summary>
-    private IHost Host { get; set; }
+    private IHost Host { get; }
 
     /// <summary>
     /// Gets a service of type T from the application's service provider.
