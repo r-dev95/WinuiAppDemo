@@ -27,5 +27,5 @@ public sealed partial class SettingsPage : Page
     /// <summary>
     /// Gets the view model.
     /// </summary>
-    public SettingsViewModel ViewModel { get; private set; }
+    public SettingsViewModel ViewModel { get; }
 }

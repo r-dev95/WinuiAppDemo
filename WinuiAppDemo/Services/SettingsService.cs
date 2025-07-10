@@ -20,11 +20,9 @@ public class SettingsService : ISettingsService
 
     private readonly AppSettings _options;
 
-    private readonly string _fName = string.Empty;
+    private readonly string _fName;
 
     private readonly string _dPath = App.DPath;
-
-    private UserSettings _userSettings = default!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsService"/> class.
@@ -37,17 +35,7 @@ public class SettingsService : ISettingsService
     }
 
     /// <inheritdoc />
-    public UserSettings UserSettings
-    {
-        get => _userSettings;
-        set
-        {
-            if (_userSettings != value)
-            {
-                _userSettings = value;
-            }
-        }
-    }
+    public UserSettings UserSettings { get; set; } = new ();
 
     /// <inheritdoc />
     public void Load()
@@ -62,16 +50,18 @@ public class SettingsService : ISettingsService
             {
                 UserSettings = data;
             }
+
+            _logger.Debug($"Loading successful. _dPath: {_dPath}, _fName: {_fName}");
         }
         catch (FileNotFoundException)
         {
-            _logger.Warn("Settings file not found. Using default settings.");
             UserSettings = new UserSettings();
+            _logger.Warn("Settings file not found. Using default settings.");
         }
         catch (Exception ex)
         {
-            _logger.Warn(ex, "Failed to load settings.");
             UserSettings = new UserSettings();
+            _logger.Error(ex, "Failed to load settings.");
         }
     }
 
@@ -84,10 +74,11 @@ public class SettingsService : ISettingsService
             string fpath = Path.Combine(_dPath, _fName);
             string json = JsonSerializer.Serialize(UserSettings, AppJsonContext.Indented.UserSettings);
             await File.WriteAllTextAsync(fpath, json, encoding);
+            _logger.Debug($"Successful save. _dPath: {_dPath}, _fName: {_fName}");
         }
         catch (Exception ex)
         {
-            _logger.Warn(ex, "Failed to save settings.");
+            _logger.Error(ex, "Failed to save settings.");
         }
     }
 }

@@ -7,7 +7,7 @@ using WinuiAppDemo.Services.Interfaces;
 namespace WinuiAppDemo.Services;
 
 /// <inheritdoc />
-internal class ClockService : IClockService
+public class ClockService : IClockService
 {
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

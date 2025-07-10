@@ -34,5 +34,5 @@ public sealed partial class ShellPage : Page
     /// <summary>
     /// Gets the view model.
     /// </summary>
-    public ShellViewModel ViewModel { get; private set; }
+    public ShellViewModel ViewModel { get; }
 }

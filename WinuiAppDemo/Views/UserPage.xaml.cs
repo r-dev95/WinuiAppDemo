@@ -27,5 +27,5 @@ public sealed partial class UserPage : Page
     /// <summary>
     /// Gets the view model.
     /// </summary>
-    public UserViewModel ViewModel { get; private set; }
+    public UserViewModel ViewModel { get; }
 }
