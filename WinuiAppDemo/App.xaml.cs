@@ -75,7 +75,7 @@ public partial class App : Application
     /// <summary>
     /// Gets the current application window instance.
     /// </summary>
-    public static Window MainWindow { get; private set; } = new MainWindow();
+    public static Window MainWindow { get; private set; } = GetService<MainWindow>();
 
     /// <summary>
     /// Gets or sets the current application host instance.
